@@ -18,7 +18,6 @@ export async function bootstrap() {
   const jsonParser = bodyParser.json();
   app.use(jsonParser);
   app.useGlobalPipes(new ValidationPipe());
-  app.useGlobalInterceptors(await app.get(LoggerErrorInterceptor));
   console.log('port: ', config.get('app.port'));
   await app.listen(config.get('app.port'));
 return app;
