@@ -1,23 +1,53 @@
-import { Controller, Get, Post, Query, Body } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Query,
+  Body,
+  Res,
+  Redirect,
+  Param,
+  Render,
+} from '@nestjs/common';
 import { StatisticsService } from './statistics.service';
-import { RegisterChannelDto } from './dto/register.channel.dto';
+import { ChannelDto } from './dto/channel.dto';
+import { Response } from 'express';
 
-@Controller('statistics')
+@Controller()
 export class StatisticsController {
-  constructor(private readonly appService: StatisticsService) {}
+  constructor(private readonly statisticsService: StatisticsService) {}
 
-  @Post()
-  async registerChannel(@Body() channelData: RegisterChannelDto): Promise<{ result: string }> {
-    return { result: "OK" }
+  @Post('register_channel')
+  @Redirect('/statistics/:channelUuid')
+  async registerChannel(@Body() channelData: ChannelDto) {
+    const channelUuid = await this.statisticsService.registerChannel(
+      channelData.channelId,
+    );
+    return { url: `/statistics/${channelUuid}` };
   }
 
-  @Get('subscriptions')
-  async getSubscriptions(@Query("channelID") channelID: string): Promise<{viewCount: string, subscriberCount: string, videoCount: string }> {
-    const statistics = await this.appService.getSubscriptions(channelID);
+  @Get('statistics/:channelUuid')
+  async getStatistics(@Param('channelUuid') channelUuid: string): Promise<{
+    viewCount: string;
+    subscriberCount: string;
+    videoCount: string;
+  }> {
+    const statistics = await this.statisticsService.getStatistics(channelUuid);
     return {
       viewCount: statistics.viewCount,
-      videoCount:statistics.videoCount,
-      subscriberCount: statistics.subscriberCount
-    }
+      videoCount: statistics.videoCount,
+      subscriberCount: statistics.subscriberCount,
+    };
+  }
+
+  // @Get()
+  // @Render()
+  // index() {
+  //   return;
+  // }
+
+  @Post()
+  async upsertChannel(@Body() channelData: ChannelDto) {
+    await this.statisticsService.upsertChannel(channelData.channelId);
   }
 }
