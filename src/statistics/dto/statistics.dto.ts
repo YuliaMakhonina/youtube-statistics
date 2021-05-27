@@ -1,4 +1,4 @@
-import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsDate, IsNotEmpty, IsString } from 'class-validator';
 
 export class StatisticsDto {
   @IsString()
@@ -16,4 +16,8 @@ export class StatisticsDto {
   @IsString()
   @IsNotEmpty()
   videoCount: string;
+
+  @IsDate()
+  @IsNotEmpty()
+  date: Date;
 }

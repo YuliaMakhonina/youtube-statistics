@@ -12,42 +12,28 @@ import {
 import { StatisticsService } from './statistics.service';
 import { ChannelDto } from './dto/channel.dto';
 import { Response } from 'express';
+import { StatisticsDto } from './dto/statistics.dto';
 
 @Controller()
 export class StatisticsController {
   constructor(private readonly statisticsService: StatisticsService) {}
-
-  @Post('register_channel')
-  @Redirect('/statistics/:channelUuid')
-  async registerChannel(@Body() channelData: ChannelDto) {
-    const channelUuid = await this.statisticsService.registerChannel(
-      channelData.channelId,
-    );
-    return { url: `/statistics/${channelUuid}` };
-  }
-
-  @Get('statistics/:channelUuid')
-  async getStatistics(@Param('channelUuid') channelUuid: string): Promise<{
-    viewCount: string;
-    subscriberCount: string;
-    videoCount: string;
-  }> {
-    const statistics = await this.statisticsService.getStatistics(channelUuid);
-    return {
-      viewCount: statistics.viewCount,
-      videoCount: statistics.videoCount,
-      subscriberCount: statistics.subscriberCount,
-    };
-  }
-
-  // @Get()
-  // @Render()
-  // index() {
-  //   return;
-  // }
-
   @Post()
+  @Redirect('statistics/:channelUuid')
   async upsertChannel(@Body() channelData: ChannelDto) {
-    await this.statisticsService.upsertChannel(channelData.channelId);
+    const channelUuid = await this.statisticsService.upsertChannel(channelData.channelId);
+    console.log(channelUuid);
+    return {url: `statistics/${channelUuid}`}
+  }
+
+  @Get()
+  hello() {
+    return {server_status: "OK"}
+  }
+  @Get('statistics/:channelUuid')
+  async getStatistics(@Param('channelUuid') channelUuid: string) {
+    console.log(channelUuid);
+    const statistics: StatisticsDto[] = await this.statisticsService.getStatistics(channelUuid);
+    console.log(statistics);
+    return statistics;
   }
 }

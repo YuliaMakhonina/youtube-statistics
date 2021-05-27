@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { StatisticsModule } from './statistics/statistics.module';
 import { LoggerErrorInterceptor } from './interceptors/logger.error.interceptor';
+import { StatisticsModule } from './statistics/statistics.module';
 
 @Module({
   providers: [LoggerErrorInterceptor],

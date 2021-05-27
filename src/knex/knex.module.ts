@@ -1,4 +1,4 @@
-import * as knex from 'knex';
+import {knex} from 'knex';
 import * as config from 'config';
 import { Module } from '@nestjs/common';
 
@@ -8,7 +8,7 @@ const knexFactory = {
     return knex({
       client: 'postgresql',
       connection: {
-        connectionString: config.get('db.url'),
+        connectionString: `${config.get('db.connectionString')}:${config.get('db.port')}/${config.get('db.database')}`,
       },
       pool: {
         min: 2,

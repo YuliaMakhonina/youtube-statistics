@@ -4,8 +4,11 @@ module.exports = {
     apiKey: 'AIzaSyDRoPeBNjI-obIyK4J4SKCWy-zrx6j1Mf0',
   },
   db: {
-    url:
-      process.env.DATABASE_URL ||
-      'postgres://docker:docker@localhost:1002/youtube-statistics',
+    connectionString: 'postgres://docker:docker@localhost',
+    port: 1002,
+    database: 'youtube-statistics'
   },
+  rmq: {
+    host: 'localhost'
+  }
 };
